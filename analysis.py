@@ -5,6 +5,7 @@ import numpy as np
 # Basic statistics
 # -----------------------------
 def compute_basic_stats(df: pd.DataFrame):
+    
     stats = df.describe().T  # mean, std, min, max, etc.
     return stats
 
@@ -13,6 +14,8 @@ def compute_basic_stats(df: pd.DataFrame):
 # Acceleration characteristics
 # -----------------------------
 def compute_acceleration_characteristics(df: pd.DataFrame):
+    
+    
     result = {}
 
     if "Acceleration" in df.columns:
@@ -26,6 +29,17 @@ def compute_acceleration_characteristics(df: pd.DataFrame):
 
     return result
 
+def compute_engine_rpm(df: pd.DataFrame):
+    
+    result = {}
+    
+    rpm = df["EngineRPM"]
+    
+    result["max_rpm"] = rpm.max()
+    result["min_rpm"] = rpm.min()
+    result["mean_rpm"] = rpm.mean()
+    
+    return result
 
 # -----------------------------
 # Fuel Efficiency
@@ -37,11 +51,15 @@ def compute_fuel_efficiency(df: pd.DataFrame):
 
         total_fuel = df["FuelConsumption"].sum()
         total_distance = df["Distance"].iloc[-1] - df["Distance"].iloc[0]
+        
+        result["total_distance"] = total_distance
 
         if total_fuel > 0:
-            result["fuel_consumption_rate"] = total_fuel / total_distance
+            result["fuel_consumption_rate"] = total_distance / total_fuel
         else:
             result["fuel_consumption_rate"] = None
+            
+        
 
     return result
 
@@ -50,14 +68,19 @@ def compute_fuel_efficiency(df: pd.DataFrame):
 # Braking performance
 # -----------------------------
 def compute_braking_performance(df: pd.DataFrame):
+
+    
     result = {}
 
     if "Acceleration" in df.columns and "Speed" in df.columns:
-        braking_events = df[df["Acceleration"] < -1.5]  # threshold
+        braking_events = df[df["Acceleration"] < -3.0]  # threshold
         result["num_hard_brakes"] = len(braking_events)
 
         if not braking_events.empty:
             result["max_braking_force"] = braking_events["Acceleration"].min()
+            result["mean"] = braking_events["Acceleration"].mean()
+            
+            result["count"] = braking_events["Acceleration"].count()
 
     return result
 
@@ -66,6 +89,7 @@ def compute_braking_performance(df: pd.DataFrame):
 # Basic motion analysis
 # -----------------------------
 def compute_motion_analysis(df: pd.DataFrame):
+    
     result = {}
 
     if "Speed" in df.columns:
