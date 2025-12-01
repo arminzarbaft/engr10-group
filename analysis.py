@@ -72,15 +72,19 @@ def compute_braking_performance(df: pd.DataFrame):
     
     result = {}
 
-    if "Acceleration" in df.columns and "Speed" in df.columns:
-        braking_events = df[df["Acceleration"] < -3.0]  # threshold
-        result["num_hard_brakes"] = len(braking_events)
+    try:
+        if "Acceleration" in df.columns and "Speed" in df.columns:
+            braking_events = df[df["Acceleration"] < -3.0]  # threshold
+            result["num_hard_brakes"] = len(braking_events)
 
         if not braking_events.empty:
             result["max_braking_force"] = braking_events["Acceleration"].min()
             result["mean"] = braking_events["Acceleration"].mean()
-            
             result["count"] = braking_events["Acceleration"].count()
+
+    except Exception as e:
+        # Store the error message instead of failing hard
+        result["error"] = f"Error in compute_braking_performance: {e}"
 
     return result
 
@@ -89,14 +93,18 @@ def compute_braking_performance(df: pd.DataFrame):
 # Basic motion analysis
 # -----------------------------
 def compute_motion_analysis(df: pd.DataFrame):
-    
     result = {}
 
-    if "Speed" in df.columns:
-        speed = df["Speed"]
-        time = df["Time"]
-        result["max_speed"] = speed.max()
-        result["mean_speed"] = speed.mean()
-        result["distance_estimate"] = np.trapz(speed, x=time)  # integration
+    try:
+        if "Speed" in df.columns and "Time" in df.columns:
+            speed = df["Speed"]
+            time = df["Time"]
+
+            result["max_speed"] = speed.max()
+            result["mean_speed"] = speed.mean()
+            result["distance_estimate"] = np.trapz(speed, x=time)  # integration
+
+    except Exception as e:
+        result["error"] = f"Error in compute_motion_analysis: {e}"
 
     return result
