@@ -7,6 +7,10 @@ raw = data_mgmt.df.copy()
 
     
 def time_plots(type):
+    '''
+    A Function that returns parameter-time plots using a type parameter ( the vehicle type )
+    '''
+    
     fig, axes = plt.subplots(nrows=2, ncols=3, figsize=(25, 25))
     
     fig.suptitle(f'Time Series Analysis for {type} Vechicle', fontsize=16)

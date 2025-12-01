@@ -13,9 +13,7 @@ def compute_basic_stats(df: pd.DataFrame):
 # -----------------------------
 # Acceleration characteristics
 # -----------------------------
-def compute_acceleration_characteristics(df: pd.DataFrame):
-    
-    
+def compute_acceleration_characteristics(df: pd.DataFrame):  
     result = {}
 
     if "Acceleration" in df.columns:
